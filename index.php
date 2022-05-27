@@ -55,9 +55,3 @@ add_filter("plugin_action_links_$plugin",function($links){
 add_shortcode('product_table_download_pdf_button',function(){
 	return '<button><a href="'.site_url().'/?product_table_download_pdf=yes">Download PDF</a></button>';
 });
-?>
-<?php
-/* Powered By Haysky Code Generator: KEY
-[["shortcode","product_table_download_pdf_button"],["submit","Index File"]]
-*/
-?>
