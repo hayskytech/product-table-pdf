@@ -1,11 +1,11 @@
 <?php
 function print_pdf_bkh(){
-    $custom_logo_id = get_theme_mod( 'custom_logo' );
-    $logo = wp_get_attachment_image_src( $custom_logo_id , 'medium' )[0];
     ?>
     <style type="text/css">
-        table{
+        body{
+            max-width: 1200px;
             margin: auto;
+            padding: 20px;
         }
         table,td{
             border-collapse: collapse;
@@ -24,22 +24,22 @@ function print_pdf_bkh(){
             }
         }
     </style>
+        <?php echo apply_filters('the_content',get_option('product_table_header'),'features',true); ?>
     <center>
-        <img src="<?php echo $logo; ?>" height="200">
-        <br><button onclick="window.print()"><big>Print</big></button>
+        <br><button onclick="window.print()"><big>Print / Save as PDF</big></button>
     </center>
     <table border="1">
         <thead>
             <tr>
                 <th>Producer</th>
-                <th>Regions/Producers</th>
+                <!-- <th>Regions/Producers</th> -->
                 <th>Name</th>
                 <th>SKU</th>
                 <th>Format</th>
-                <th>Summary</th>
+                <!-- <th>Summary</th> -->
                 <th>Price</th>
                 <th>Sale Price</th>
-                <th>Notes</th>
+                <!-- <th>Notes</th> -->
             </tr>
         </thead>
         <tbody>
@@ -60,15 +60,16 @@ function print_pdf_bkh(){
         $tags = get_the_terms ( $product->id, 'product_tag' );
         $notes = get_post_meta( $product->id, 'notes', true );
         echo '<tr>
-        <td><img src="'.$brand_url[0].'" height="80"></td>
-        <td>'.$cat.'</td>
-        <td>'.get_the_title().'</td>
+        <td><img src="'.$brand_url[0].'" height="80"></td>';
+        // echo '<td>'.$cat.'</td>';
+        echo '<td>'.get_the_title().'</td>
         <td>'.$product->get_sku().'</td>
         <td>';
         foreach ($tags as $tag) {
             echo $tag->name.', ';
         }
         echo '</td>';
+        
         $price = $product->get_regular_price();
         $sprice = $product->get_sale_price();
         if ($price) {
@@ -77,18 +78,19 @@ function print_pdf_bkh(){
         if ($sprice) {
             $sprice = $sym.$sprice;
         }
-        echo '<td>'.get_the_excerpt().'</td>
-        <td>'.$price.'</td>
-        <td>'.$sprice.'</td>
-        <td>'.$notes.'</td>
-        </tr>';
+        // echo '<td>'.get_the_excerpt().'</td>';
+        echo '<td>'.$price.'</td>
+        <td>'.$sprice.'</td>';
+        // echo '<td>'.$notes.'</td>';
+        
+        echo '</tr>';
     endwhile;
 
     wp_reset_query();
     ?>
         </tbody>
     </table>
-    <center><button onclick="window.print()"><big>Print</big></button></center>
+    <center><button onclick="window.print()"><big>Print / Save as PDF</big></button></center>
     <?php
     exit;
 }
