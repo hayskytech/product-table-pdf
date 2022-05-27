@@ -46,7 +46,7 @@ if (isset($_GET["product_table_download_pdf"])) {
 $plugin = plugin_basename(__FILE__);
 add_filter("plugin_action_links_$plugin",function($links){
     $product_table_download_pdf_button_link = 
-    '<a href="'.site_url().'/?product_table_download_pdf=yes">Download PDF</a>';
+    '<a href="'.site_url().'/?product_table_download_pdf=yes" target="_blank">Download PDF</a>';
     array_unshift($links, $product_table_download_pdf_button_link);
     return $links;
 });
@@ -55,3 +55,9 @@ add_filter("plugin_action_links_$plugin",function($links){
 add_shortcode('product_table_download_pdf_button',function(){
 	return '<button><a href="'.site_url().'/?product_table_download_pdf=yes">Download PDF</a></button>';
 });
+
+add_action('admin_menu' , function(){
+    add_options_page('Product Table PDF Header','Product PDF Table Header','manage_options', 'product_table_header_admin', 'product_table_header_qtn', 'dashicons-admin-users','2');
+});
+
+function product_table_header_qtn(){ include 'product_table_header.php'; }
