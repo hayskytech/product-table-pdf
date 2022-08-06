@@ -4,8 +4,8 @@ Plugin Name: #Product Table Download PDF
 Plugin URI: https://www.haysky.com/
 Description: Generate a separate page for Product Table. Print and Save as PDF.
 Version: 1.0.0
-Author: Sufyan
-Author URI: https://www.sufyan.in/
+Author: Haysky
+Author URI: https://www.haysky.com/
 License: GPLv2 or later
 Text Domain: haysky
 */
@@ -57,7 +57,10 @@ add_shortcode('product_table_download_pdf_button',function(){
 });
 
 add_action('admin_menu' , function(){
-    add_options_page('Product Table PDF Header','Product PDF Table Header','manage_options', 'product_table_header_admin', 'product_table_header_qtn', 'dashicons-admin-users','2');
+    add_submenu_page('edit.php?post_type=product', 'PDF Download','PDF Download','manage_options', 'product_table_header_admin', function(){
+        wp_redirect(site_url().'?product_table_download_pdf=yes');
+    });
+    add_submenu_page('edit.php?post_type=product', 'PDF Header/Footer','PDF Header/Footer','manage_options', 'product_table_header_footer_boc', 'product_table_header_qtn');
 });
 
 function product_table_header_qtn(){ include 'product_table_header.php'; }

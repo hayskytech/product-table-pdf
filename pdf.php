@@ -7,42 +7,65 @@ function print_pdf_bkh(){
             margin: auto;
             padding: 10px;
         }
-        th,table{
+        @page {
+            size: A4;
+            /*margin: 11mm 17mm 17mm 17mm;*/
+        }
+        .today-date{
+            float: right;
+            font-size: 13px;
+        }
+        .inner-table th{
+            text-align: left;
+        }
+        .inner-table,.inner-table th{
             border-bottom: 1px solid;
             border-top: 1px solid;
             border-collapse: collapse;
         }
-        table{
+        .inner-table{
             width: 100%;
         }
-        td,th{
-            font-size: 15px;
+        .inner-table td,.inner-table th{
+            font-size: 14px;
         }
         .cat_name{
-            font-size: 20px;
+            margin: 0;
+            font-size: 16px;
+            padding-top: 10px;
             font-weight: bold;
+            color: #414827;
         }
-        td,th,p{
+        .inner-table td,.inner-table th,p{
             font-family: sans-serif;
         }
+        img.brand{
+            max-width: 120px;
+        }
+        p{
+            margin: 0 !important;
+        }
         button{
-            margin: 10px;
-            padding: 10px;
+            cursor: pointer;
         }
         @media print{
             button{
                 display: none;
             }
-            .pagebreak{
-                /*page-break-after: always;*/
+            thead span,tfoot span,thead p,tfoot p{
+                font-size: 10px !important;
             }
+            
         }
     </style>
+    <title><?php echo get_bloginfo( 'name' ); ?> - Products</title>
+    <table class="outer-table" style="width:100%;"><thead><tr><td style="background-color: #404725;color: white;padding: 10px;position: relative;height: 90px;text-align: center;border-radius: 3px;">
     <?php echo apply_filters('the_content',get_option('product_table_header'),'features',true); ?>
-        <caption>
-            <button onclick="window.print()"><big>Print / Save as PDF</big></button>
-        </caption>
+    </td></tr></thead>
+    <tbody><tr><td>
+    <div style="text-align: right;"><button onclick="window.print()">Print / Save as PDF</button></div>
     <?php
+    $uncat = get_term_by( 'slug', 'uncategorized','product_cat' );
     $args = array(
         'taxonomy'     => 'product_cat',
         'orderby'      => 'name',
@@ -50,20 +73,21 @@ function print_pdf_bkh(){
         'pad_counts'   => 0,
         'hierarchical' => 1,
         'title_li'     => '',
-        'hide_empty'   => 1
+        'hide_empty'   => 1,
+        'exclude'      => $uncat->term_id
     );
     $categories = get_categories( $args );
     foreach ($categories as $category) {
         echo '<p class="cat_name">'.$category->name.'</p>';
         ?>
-        <table>
+        <table class="inner-table">
         <thead>
             <tr>
-                <th>Producer</th>
-                <th>Name</th>
-                <th>SKU</th>
-                <th>Format</th>
-                <th>Price</th>
+                <th style="width: 120px;">Producer</th>
+                <th style="width: 400px;">Name</th>
+                <th style="width: 60px;">SKU</th>
+                <th style="width: 250px;">Format</th>
+                <th style="width: 60px;">Price</th>
             </tr>
         </thead>
         <tbody>
@@ -94,21 +118,21 @@ function print_pdf_bkh(){
             global $product;
             $brand = get_post_meta( $product->id, 'brand_logo', true );
             $brand_url = wp_get_attachment_image_src($brand, 'medium');
-            $cat = get_the_terms ( $product->id, 'product_cat' )[0]->name;
             $tags = get_the_terms ( $product->id, 'product_tag' );
             $notes = get_post_meta( $product->id, 'notes', true );
             echo '<tr>';
             if ($image==1) {
-                echo '<td rowspan="'.$loop->post_count.'">';
+                echo '<td rowspan="'.$loop->post_count.'" style="text-align:center;width: 120px;">';
+                $cat_link = get_term_link( $category->term_id, 'product_cat' );
                 if ($brand_url[0]) {
-                    echo '<img src="'.$brand_url[0].'" height="80"></td>';
+                    echo '<a href="'.$cat_link.'" target="_blank"><img class="brand" src="'.$brand_url[0].'"></a></td>';
                 }
                 echo '</td>';
                 $image = 0;
             }
-            echo '<td>'.get_the_title().'</td>
-            <td>'.$product->get_sku().'</td>
-            <td>';
+            echo '<td style="width: 400px;">'.get_the_title().'</td>
+            <td style="width: 60px;">'.$product->get_sku().'</td>
+            <td style="width: 250px;">';
             foreach ($tags as $tag) {
                 echo $tag->name.', ';
             }
@@ -118,7 +142,7 @@ function print_pdf_bkh(){
             if ($price) {
                 $price = $sym.$price;
             }
-            echo '<td>'.$price.'</td>';
+            echo '<td style="padding-right:10px;width: 60px;">'.$price.'</td>';
             echo '</tr>';
         endwhile;
 
@@ -130,8 +154,20 @@ function print_pdf_bkh(){
         <?php
     }
     ?>
-    <button onclick="window.print()"><big>Print / Save as PDF</big></button>
-    <?php echo apply_filters('the_content',get_option('product_table_footer'),'features',true); ?>
+    <div style="text-align: right;"><button onclick="window.print()">Print / Save as PDF</button></div>
+    </td></tr></tbody>
+    <tfoot>
+        <tr>
+            <td style="background-color:#404725;color: white;padding: 10px;border-radius: 3px;">    
+                <span class="today-date">Updated: <?php echo date('M d, Y - h:i A'); ?></span>
+                <?php 
+                echo apply_filters('the_content',get_option('product_table_footer'),'features',true);
+                ?>
+            </td>
+        </tr>
+    </tfoot>
+    </footer>
+</table>
     <?php
     exit;
 }
