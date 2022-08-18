@@ -1,14 +1,13 @@
 <?php
-/*
-Plugin Name: #Product Table Download PDF
-Plugin URI: https://www.haysky.com/
-Description: Generate a separate page for Product Table. Print and Save as PDF.
-Version: 1.0.0
-Author: Haysky
-Author URI: https://www.haysky.com/
-License: GPLv2 or later
-Text Domain: haysky
-*/
+/**
+ * Plugin Name: #Product Table Download PDF
+ * Plugin URI: https://haysky.com/
+ * Description: Generate a separate page for Product Table. Print and Save as PDF.
+ * Version: 1.0.0
+ * Author: Haysky
+ * Author URI: https://haysky.com/
+ * License: GPLv2 or later
+ */
 // $wpdb->show_errors(); $wpdb->print_error();
 error_reporting(E_ERROR | E_PARSE);
 
